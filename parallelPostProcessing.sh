@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-#SBATCH -t 0-01:00:00
+#SBATCH -t 0-00:10:00
 #SBATCH -N 1
 #SBATCH -n 3
 #SBATCH --account=cavitation
@@ -10,9 +10,11 @@
 #SBATCH --job-name=postparallel
 #
 #
-
+module load Python/3.12.3-GCCcore-13.3.0
+source $HOME/workEnvCPU/bin/activate
 #Loading Required Scripts
-postPath="$(dirname "$(realpath "$0")")"
+#postPath="$(dirname "$(realpath "$0")")"
+postPath="$HOME/globalScripts/openfoam-scripts"
 fields="$postPath/fields.sh"
 combine="$postPath/combine.py"
 
@@ -54,9 +56,9 @@ echo "Done extracting and processing data in the proc folders"
 
 echo "Started combining parquet files from proc folders into single one"
 #Making results folder
-mkdir -p results/data/All
+mkdir -p results/data
 
 #Combining the individual Pandas DF into one
-python3 "$combine" $SLURM_NTASKS && $postPath/deleteParallel.sh
+python3 $combine $SLURM_NTASKS && $postPath/deleteParallel.sh
 wait
-echo "Completed Post-processing the results parallelly"
+#echo "Completed Post-processing the results parallelly"
