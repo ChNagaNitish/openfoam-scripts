@@ -1,8 +1,8 @@
 #! /bin/bash
 #
-#SBATCH -t 0-00:10:00
+#SBATCH -t 0-00:30:00
 #SBATCH -N 1
-#SBATCH -n 3
+#SBATCH -n 2
 #SBATCH --account=cavitation
 #SBATCH -p normal_q
 #SBATCH --mail-user=naga@vt.edu
@@ -17,6 +17,8 @@ source $HOME/workEnvCPU/bin/activate
 postPath="$HOME/globalScripts/openfoam-scripts"
 fields="$postPath/fields.sh"
 combine="$postPath/combine.py"
+avg="$postPath/averaging.py"
+threeD=1
 
 #Moving time folders to subfolders
 echo "Started copying the time folders into proc folders"
@@ -47,7 +49,7 @@ echo "Started extracting data"
 for i in $(seq 1 $SLURM_NTASKS)
 do
 	cd "./proc_$i"
-	srun -Q --exclusive -n 1 -N 1 "$fields" &
+	srun -Q --exclusive -n 1 -N 1 bash -c "$fields $threeD" &
 	cd ..
 	sleep 1
 done
@@ -59,6 +61,8 @@ echo "Started combining parquet files from proc folders into single one"
 mkdir -p results/data
 
 #Combining the individual Pandas DF into one
+mv proc_1/results/data/points.parquet resutls/data/
 python3 $combine $SLURM_NTASKS && $postPath/deleteParallel.sh
 wait
+python3 $avg
 #echo "Completed Post-processing the results parallelly"

@@ -4,7 +4,7 @@ from scipy.interpolate import LinearNDInterpolator
 
 from math import cos, sin
 
-df = pd.read_parquet('results/data/All/velocityMean.parquet')#,usecol=['Points:0','Points:1','U:0','U:1','alpha.water'])
+df = pd.read_parquet('results/data/velocityMean.parquet')#,usecol=['Points:0','Points:1','U:0','U:1','alpha.water'])
 
 #Rotate data set by 8deg to match experimental data and visualize diverging section as horizontal
 theta = np.deg2rad(8)

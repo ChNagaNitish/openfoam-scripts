@@ -20,18 +20,18 @@ except OSError as error:
 # create a new 'OpenFOAMReader'
 foamfoam = OpenFOAMReader(FileName=read_file)
 foamfoam.MeshRegions = ['internalMesh']
-foamfoam.CellArrays = ['U', 'alpha.water', 'k', 'nut', 'omega', 'p', 'p_rgh', 'rho', 'turbulenceProperties:R']
+foamfoam.CellArrays = ['U', 'alpha.water', 'k', 'nut', 'omega', 'p']
 
-gradientOfUnstructuredDataSet1 = GradientOfUnstructuredDataSet(Input=foamfoam)
-gradientOfUnstructuredDataSet1.ScalarArray = ['POINTS', 'p']
-gradientOfUnstructuredDataSet1.ResultArrayName = 'pGrad'
+gradient1 = Gradient(Input=foamfoam)
+gradient1.ScalarArray = ['POINTS', 'p']
+gradient1.ResultArrayName = 'pGrad'
 
-gradientOfUnstructuredDataSet = GradientOfUnstructuredDataSet(Input=gradientOfUnstructuredDataSet1)
-gradientOfUnstructuredDataSet.ScalarArray = ['POINTS', 'U']
-gradientOfUnstructuredDataSet.ResultArrayName = 'uGrad'
+gradient2 = Gradient(Input=gradient1)
+gradient2.ScalarArray = ['POINTS', 'U']
+gradient2.ResultArrayName = 'uGrad'
 
 # save data
-SaveData(save_path+'/data.csv', proxy=gradientOfUnstructuredDataSet, ChooseArraysToWrite=1,PointDataArrays=['U', 'alpha.water', 'k', 'nut', 'omega', 'p', 'pGrad', 'turbulenceProperties:R','uGrad'], WriteTimeSteps=1)
+SaveData(save_path+'/data.csv', proxy=gradient2, ChooseArraysToWrite=1,PointDataArrays=['U', 'alpha.water', 'k', 'nut', 'omega', 'p', 'pGrad', 'uGrad'], WriteTimeSteps=1,WriteTimeStepsSeparately=1,Precision=6,AddTime=1)
 print('|----------------------------------------|')
 print('|  Extraction of All fields is complete  |')
 print('|----------------------------------------|')

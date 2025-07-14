@@ -16,7 +16,7 @@ for base_name in fileNames:
     output_mean_path_parquet = os.path.join(output_dir, f'{base_name}Mean.parquet')
     file_path = os.path.join(relative_path,f'{base_name}.parquet')
     ddf = dd.read_parquet(file_path, engine='pyarrow')
-    grouped_mean = ddf.groupby(['GridIndex']).mean()
+    grouped_mean = ddf.groupby(['index']).mean()
     mean_pandas_df = grouped_mean.compute()
     mean_pandas_df.to_parquet(output_mean_path_parquet, index=False)
     print('|----------------------------------------------------------------|')
